@@ -1,2 +1,7 @@
 # donga
-test repository
+파일 정리 도구
+
+# Features
+ - 파일 탐색 및 자동 분류
+ - 파일 정리 및 복구
+ - 중복 파일 탐지 및 관리
