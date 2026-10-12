@@ -1,0 +1,81 @@
+
+name: Python CLI CI and DORA Deployment
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  test:
+    name: Code Check and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest ruff
+          if [ -f requirements.txt ]; then
+            python -m pip install -r requirements.txt
+          fi
+
+      - name: Check Python syntax
+        run: python -m compileall -q .
+
+      - name: Lint code
+        run: ruff check .
+
+      - name: Run tests
+        run: python -m pytest
+
+  record-deployment:
+    name: Record DORA Deployment
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create GitHub Deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.sha }}
+          SERVER_URL: ${{ github.server_url }}
+          RUN_ID: ${{ github.run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          gh api "repos/${REPOSITORY}/deployments" \
+            -f ref="${COMMIT_SHA}" \
+            -f environment="production" \
+            -f description="Python CLI CI passed; deployment record for DORA" \
+            -F auto_merge=false \
+            -F required_contexts='[]' \
+            > deployment.json
+
+          DEPLOYMENT_ID=$(python -c \
+            "import json; print(json.load(open('deployment.json'))['id'])")
+
+          gh api \
+            "repos/${REPOSITORY}/deployments/${DEPLOYMENT_ID}/statuses" \
+            -f state="success" \
+            -f environment="production" \
+            -f description="CI checks passed; logical deployment recorded" \
+            -f log_url="${SERVER_URL}/${REPOSITORY}/actions/runs/${RUN_ID}"
