@@ -7,14 +7,17 @@ assignees: ''
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+name: Feature Request
+description: 기능 제안
+title: "[Feature]"
+**특정 문제**
+문제 상황에 대한 명확하고 간결한 설명
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+**해결 방안**
+어떤 기능이 구현되기를 원하는지에 대한 명확하고 간결한 설명
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+**대안 설명**
+검토해 본 다른 해결책이나 기능에 대한 명확하고 간결한 설명
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+**추가 정보**
+기능 요청과 관련된 기타 배경 정보나 스크린샷
