@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-18T07:14:16.425206+00:00",
+  "generated_at": "2026-10-19T07:47:32.111693+00:00",
   "repository": "cc082456/donga",
   "definitions": {
     "lead_time": "Commit author timestamp → successful production deployment status (hours; median)",
